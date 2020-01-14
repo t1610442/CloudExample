@@ -133,6 +133,68 @@ class DataSelectActivity : AppCompatActivity() {
 
             dialog.show()
         }
+
+        imageView4.setOnClickListener{
+            var imageView = ImageView(this)
+            var bitmap = (imageView4.drawable as BitmapDrawable).bitmap
+            Log.d("bitmap", bitmap.toString())
+            imageView.setImageBitmap(bitmap)
+
+            var display : Display = windowManager.defaultDisplay
+            var size = Point()
+            display.getSize(size)
+            Log.d("size.x", size.x.toString())
+            Log.d("size.y", size.y.toString())
+            var width = size.x
+
+            //var a : Float = bitmap.width as Float
+            Log.d("bitmap.width", bitmap.width.toString())
+
+            var factor = width.toFloat() / bitmap.width.toFloat()
+            Log.d("factor", factor.toString())
+            imageView.scaleType = ImageView.ScaleType.FIT_CENTER
+
+            var dialog = Dialog(this)
+
+            dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
+            Log.d("width",(bitmap.width*factor).toInt().toString())
+
+            dialog.setContentView(imageView)
+            dialog.window?.setLayout((bitmap.width*factor*0.7).toInt(), (bitmap.height*factor*0.7).toInt())
+
+            dialog.show()
+        }
+
+        imageView5.setOnClickListener{
+            var imageView = ImageView(this)
+            var bitmap = (imageView5.drawable as BitmapDrawable).bitmap
+            Log.d("bitmap", bitmap.toString())
+            imageView.setImageBitmap(bitmap)
+
+            var display : Display = windowManager.defaultDisplay
+            var size = Point()
+            display.getSize(size)
+            Log.d("size.x", size.x.toString())
+            Log.d("size.y", size.y.toString())
+            var width = size.x
+
+            //var a : Float = bitmap.width as Float
+            Log.d("bitmap.width", bitmap.width.toString())
+
+            var factor = width.toFloat() / bitmap.width.toFloat()
+            Log.d("factor", factor.toString())
+            imageView.scaleType = ImageView.ScaleType.FIT_CENTER
+
+            var dialog = Dialog(this)
+
+            dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
+            Log.d("width",(bitmap.width*factor).toInt().toString())
+
+            dialog.setContentView(imageView)
+            dialog.window?.setLayout((bitmap.width*factor*0.7).toInt(), (bitmap.height*factor*0.7).toInt())
+
+            dialog.show()
+        }
     }
 
     private fun setImages(selectName: List<*>, imageName: ArrayList<ImageView>){
@@ -173,43 +235,4 @@ class DataSelectActivity : AppCompatActivity() {
         }
         Toast.makeText(this, "画像の表示完了", Toast.LENGTH_SHORT).show()
     }
-
-    /*private fun setImages2(selectName: List<*>){
-        //Log.d("button9", selectName.toString())
-        Toast.makeText(this, "画像を準備中", Toast.LENGTH_SHORT).show()
-        val query: NCMBQuery<NCMBFile> = NCMBFile.getQuery()
-        for (i in 0..2) {
-            query.whereEqualTo("fileName", selectName[i])
-            query.findInBackground { list, ncmbException ->
-                if (ncmbException != null) {
-                    Log.d("[Error]", ncmbException.toString())
-                } else {
-                    Log.d("debug", list.get(0).toString())
-                    list.get(0).fetchInBackground { dataFetch, er ->
-                        if (er != null) {
-                            //失敗処理
-                            AlertDialog.Builder(this@DataSelectActivity)
-                                .setTitle("Notification from NIFCloud")
-                                .setMessage("Error:" + er.message)
-                                .setPositiveButton("OK", null)
-                                .show()
-                        } else {
-                            //成功処理
-                            val bMap = BitmapFactory.decodeByteArray(dataFetch, 0, dataFetch.size)
-                            if(i==0) imageView3.setImageBitmap(bMap)
-                            else if(i==1) imageView4.setImageBitmap(bMap)
-                            else {
-                              imageView5.setImageBitmap(bMap)
-                            }
-                            //imageName[i].setImageBitmap(bMap)
-                            //val inputStream = FileInputStream(File(path))
-                            //val bitmap = BitmapFactory.decodeStream(inputStream)
-                            //imageView2.setImageBitmap(bitmap)
-                        }
-                    }
-                }
-            }
-        }
-        Toast.makeText(this, "画像の表示完了", Toast.LENGTH_SHORT).show()
-    }*/
 }
