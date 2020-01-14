@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.TextView
 import com.nifcloud.mbaas.core.NCMB
 import com.nifcloud.mbaas.core.NCMBUser
@@ -29,9 +28,8 @@ class SignActivity : AppCompatActivity() {
             this.signIn()
         }
 
-        currentButton.setOnClickListener {
-            val user = NCMBUser.getCurrentUser()
-            Log.d("name", user.userName.toString())
+        //メイン画面遷移用のボタン
+        btnMainAct.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
@@ -46,7 +44,7 @@ class SignActivity : AppCompatActivity() {
         user.setPassword(password)
         user.saveInBackground {e ->
             if (e != null) {
-                Log.d("[Error]", e.toString())
+                Log.d("[Error1]", e.toString())
             } else {
                 (findViewById(R.id.lblStats) as TextView).text = "Sign Up successful"
             }
@@ -59,7 +57,7 @@ class SignActivity : AppCompatActivity() {
         //NCMBUser.logout()
         NCMBUser.loginInBackground(userName, password, {ncmbUser, e ->
             if (e != null) {
-                Log.d("[Error]", e.toString())
+                Log.d("[Error2]", e.toString())
             } else {
                 (findViewById(R.id.lblStats) as TextView).text = "Log in successful by ${ncmbUser.userName}"
             }

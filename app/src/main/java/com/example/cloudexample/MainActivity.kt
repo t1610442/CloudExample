@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -20,7 +19,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.nifcloud.mbaas.core.*
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.text.SimpleDateFormat
@@ -43,18 +41,18 @@ class MainActivity : AppCompatActivity() {
 
         var user = NCMBUser.getCurrentUser()
         Log.d("name", user.userName.toString())
-        Log.d("objectid", user.objectId.toString())
+        Log.d("objectId", user.objectId.toString())
 
         val queryphoto = NCMBQuery<NCMBObject>("photoPath")
         var abc = NCMBObject("photoPath")
         queryphoto.whereEqualTo("userID", user.objectId.toString())
         queryphoto.findInBackground {objects, error ->
             if (error != null) {
-                Log.d("[Error2]", error.toString())
+                Log.d("[Error3]", error.toString())
             } else {
-                Log.d("[DEBUG3]", objects.toString())
-                Log.d("[DEBUG4]", objects.size.toString())
-                //Log.d("[objectid]", objects[0].objectId.toString())
+                //Log.d("[DEBUG:objectString]", objects.toString())
+                //Log.d("[DEBUG:objectSize]", objects.size.toString())
+                //Log.d("[DEBUG:objectId]", objects[0].objectId.toString())
                 if (objects.size == 1) {
                     abc = objects[0]
                 } else {
@@ -62,12 +60,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        button3.setOnClickListener{
+        //データアップロード用のボタン
+        btnUpdate.setOnClickListener{
             val photoNameList = dbHandler!!.getAllData()
             val photoNameListCloud = arrayListOf<String>()
-            Log.d("[DEBUG5]", photoNameList.toString())
             if(photoNameList.size==0){
-
+                Toast.makeText(this, "画像データがありません", Toast.LENGTH_SHORT).show()
             }else if(photoNameList.size==1){
                 photoNameListCloud.addAll(photoNameList)
             }else if(photoNameList.size==2){
@@ -77,28 +75,10 @@ class MainActivity : AppCompatActivity() {
                 photoNameListCloud.add(photoNameList[1])
                 photoNameListCloud.add(photoNameList[2])
             }
-            //for(i in 0..2){
-            //photoNameListCloud.add(photoNameList[i])
-            //Log.d("CloudList", photoNameListCloud.toString())
-            //}
 
-            //val obj = NCMBObject("photoPath")
-            //obj.put("imageName1", photoNameListCloud[0])
-            //obj.put("imageName2", photoNameListCloud[1])
-            //obj.put("imageName3", photoNameListCloud[2])
-            //obj.put("array", photoNameListCloud)
             abc.put("userID", user.objectId.toString())
             abc.put("name", user.userName.toString())
             abc.put("array", photoNameListCloud)
-            //obj.put("pathName", photoNameListCloud as List<*>)
-            //obj.addUniqueToList("pathName", photoNameListCloud)
-            //Log.d("[DEBUG6]", abc.objectId.toString())
-            /*if (abc.objectId == null) {
-                var acl = NCMBAcl()
-                acl.setReadAccess(NCMBUser.getCurrentUser().objectId, true)
-                acl.setWriteAccess(NCMBUser.getCurrentUser().objectId, true)
-                abc.acl = acl
-            }*/
 
             //ACL 読み込み:可 , 書き込み:可
             val acl = NCMBAcl()
@@ -118,7 +98,7 @@ class MainActivity : AppCompatActivity() {
                         .setPositiveButton("OK", null)
                         .show()
                 }else{
-                    Log.d("RESULT", "SUCCESS")
+                    Log.d("[RESULT:photoUpload]", "SUCCESS")
                 }
             }
 
@@ -126,7 +106,7 @@ class MainActivity : AppCompatActivity() {
                 if(e != null){
                     Log.d("[Error]", e.toString())
                 }else{
-                    Log.d("[ObjectResult]", "SUCCESS")
+                    Log.d("[RESULT:objectUpload]", "SUCCESS")
                     Toast.makeText(this, "アップロード完了", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -136,7 +116,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        button2.setOnClickListener{
+        btnCamera.setOnClickListener{
             Intent(MediaStore.ACTION_IMAGE_CAPTURE).resolveActivity(packageManager)?.let {
                 if (checkPermission()) {
                     takePicture()
@@ -150,12 +130,12 @@ class MainActivity : AppCompatActivity() {
             Log.d("PhotoList", dbHandler?.getAllData().toString())
         }
 
-        button6.setOnClickListener {
+        btnCheck.setOnClickListener {
             val intent = Intent(this, SecondActivity::class.java)
             startActivity(intent)
         }
 
-        button10.setOnClickListener {
+        btnShare.setOnClickListener {
             val intent = Intent(this, DataSelectActivity::class.java)
             startActivity(intent)
         }
@@ -202,6 +182,7 @@ class MainActivity : AppCompatActivity() {
             val inputStream = FileInputStream(File(path))
             val bitmap = BitmapFactory.decodeStream(inputStream)
             imageView.setImageBitmap(bitmap)
+            Toast.makeText(this, "この写真で良ければ更新ボタンでアップロードしてください", Toast.LENGTH_SHORT).show()
         }
     }
 
