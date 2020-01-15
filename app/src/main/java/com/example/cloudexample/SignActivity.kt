@@ -30,7 +30,7 @@ class SignActivity : AppCompatActivity() {
 
         //メイン画面遷移用のボタン
         btnMainAct.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, DataSelectActivity::class.java)
             startActivity(intent)
         }
     }

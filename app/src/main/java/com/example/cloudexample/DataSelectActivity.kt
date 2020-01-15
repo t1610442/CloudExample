@@ -1,11 +1,22 @@
 package com.example.cloudexample
 
+import android.Manifest
+import android.app.Activity
 import android.app.Dialog
+import android.content.ContentResolver
+import android.content.ContentValues
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
 import android.graphics.Point
 import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.view.Display
 import android.view.Window
@@ -13,15 +24,32 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import com.nifcloud.mbaas.core.NCMBFile
 import com.nifcloud.mbaas.core.NCMBObject
 import com.nifcloud.mbaas.core.NCMBQuery
 import com.nifcloud.mbaas.core.NCMBUser
 import kotlinx.android.synthetic.main.activity_data_select.*
+import java.io.File
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class DataSelectActivity : AppCompatActivity() {
 
     private var objList = listOf<NCMBObject>()
+    var dbHandler = DatabaseHandler(this)
+
+    var REQUEST_CAMERA = 1000
+    var REQUEST_GARALLY1 = 1001
+    var REQUEST_GARALLY2 = 1002
+    var REQUEST_GARALLY3 = 1003
+    val PERMISSION_REQUEST = 1010
+    var path: String =""
+    var filename: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,15 +70,28 @@ class DataSelectActivity : AppCompatActivity() {
                 Log.d("[DEBUG3]", objects.toString())
                 Log.d("[DEBUG4]", objects.size.toString())
                 objList = objects
+                for(i in 1..objList.size){
+                    buttonsList[i-1].text = objList[i-1].getString("name")
+                    /*if(user.userName == buttonsList[i-1].text){
+                        setImages(objList[i-1].getList("array"), imageList)
+                    }*/
+                }
                 Log.d("[DEBUG4]", objList.size.toString())
             }
         }
 
-        //メンバー更新用のボタン
+        //カメラ撮影用のボタン
         button_user_update.setOnClickListener {
-            for(i in 1..objList.size){
+            /*for(i in 1..objList.size){
                 buttonsList[i-1].text = objList[i-1].getString("name")
-            }
+            }*/
+            Intent(MediaStore.ACTION_IMAGE_CAPTURE).resolveActivity(packageManager)?.let {
+                if (checkPermission()) {
+                    takePicture()
+                } else {
+                    grantCameraPermission()
+                }
+            } ?: Toast.makeText(this, "カメラを扱うアプリがありません", Toast.LENGTH_LONG).show()
         }
 
         //user1の画像データ表示用のボタン
@@ -104,96 +145,120 @@ class DataSelectActivity : AppCompatActivity() {
         }
 
         imageView3.setOnClickListener{
-            var imageView = ImageView(this)
-            var bitmap = (imageView3.drawable as BitmapDrawable).bitmap
-            Log.d("bitmap", bitmap.toString())
-            imageView.setImageBitmap(bitmap)
+            if(null == imageView3.drawable){
+                Toast.makeText(this, "データがありません", Toast.LENGTH_SHORT).show()
+                selectPhoto1()
+            }else {
+                var imageView = ImageView(this)
+                var bitmap = (imageView3.drawable as BitmapDrawable).bitmap
+                Log.d("bitmap", bitmap.toString())
+                imageView.setImageBitmap(bitmap)
 
-            var display : Display = windowManager.defaultDisplay
-            var size = Point()
-            display.getSize(size)
-            Log.d("size.x", size.x.toString())
-            Log.d("size.y", size.y.toString())
-            var width = size.x
+                var display: Display = windowManager.defaultDisplay
+                var size = Point()
+                display.getSize(size)
+                Log.d("size.x", size.x.toString())
+                Log.d("size.y", size.y.toString())
+                var width = size.x
 
-            //var a : Float = bitmap.width as Float
-            Log.d("bitmap.width", bitmap.width.toString())
+                //var a : Float = bitmap.width as Float
+                Log.d("bitmap.width", bitmap.width.toString())
 
-            var factor = width.toFloat() / bitmap.width.toFloat()
-            Log.d("factor", factor.toString())
-            imageView.scaleType = ImageView.ScaleType.FIT_CENTER
+                var factor = width.toFloat() / bitmap.width.toFloat()
+                Log.d("factor", factor.toString())
+                imageView.scaleType = ImageView.ScaleType.FIT_CENTER
 
-            var dialog = Dialog(this)
+                var dialog = Dialog(this)
 
-            dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
-            Log.d("width",(bitmap.width*factor).toInt().toString())
+                dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
+                Log.d("width", (bitmap.width * factor).toInt().toString())
 
-            dialog.setContentView(imageView)
-            dialog.window?.setLayout((bitmap.width*factor*0.7).toInt(), (bitmap.height*factor*0.7).toInt())
+                dialog.setContentView(imageView)
+                dialog.window?.setLayout(
+                    (bitmap.width * factor * 0.7).toInt(),
+                    (bitmap.height * factor * 0.7).toInt()
+                )
 
-            dialog.show()
+                dialog.show()
+            }
         }
 
         imageView4.setOnClickListener{
-            var imageView = ImageView(this)
-            var bitmap = (imageView4.drawable as BitmapDrawable).bitmap
-            Log.d("bitmap", bitmap.toString())
-            imageView.setImageBitmap(bitmap)
+            if(null == imageView4.drawable){
+                Toast.makeText(this, "データがありません", Toast.LENGTH_SHORT).show()
+                selectPhoto2()
+            }else {
+                var imageView = ImageView(this)
+                var bitmap = (imageView4.drawable as BitmapDrawable).bitmap
+                Log.d("bitmap", bitmap.toString())
+                imageView.setImageBitmap(bitmap)
 
-            var display : Display = windowManager.defaultDisplay
-            var size = Point()
-            display.getSize(size)
-            Log.d("size.x", size.x.toString())
-            Log.d("size.y", size.y.toString())
-            var width = size.x
+                var display: Display = windowManager.defaultDisplay
+                var size = Point()
+                display.getSize(size)
+                Log.d("size.x", size.x.toString())
+                Log.d("size.y", size.y.toString())
+                var width = size.x
 
-            //var a : Float = bitmap.width as Float
-            Log.d("bitmap.width", bitmap.width.toString())
+                //var a : Float = bitmap.width as Float
+                Log.d("bitmap.width", bitmap.width.toString())
 
-            var factor = width.toFloat() / bitmap.width.toFloat()
-            Log.d("factor", factor.toString())
-            imageView.scaleType = ImageView.ScaleType.FIT_CENTER
+                var factor = width.toFloat() / bitmap.width.toFloat()
+                Log.d("factor", factor.toString())
+                imageView.scaleType = ImageView.ScaleType.FIT_CENTER
 
-            var dialog = Dialog(this)
+                var dialog = Dialog(this)
 
-            dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
-            Log.d("width",(bitmap.width*factor).toInt().toString())
+                dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
+                Log.d("width", (bitmap.width * factor).toInt().toString())
 
-            dialog.setContentView(imageView)
-            dialog.window?.setLayout((bitmap.width*factor*0.7).toInt(), (bitmap.height*factor*0.7).toInt())
+                dialog.setContentView(imageView)
+                dialog.window?.setLayout(
+                    (bitmap.width * factor * 0.7).toInt(),
+                    (bitmap.height * factor * 0.7).toInt()
+                )
 
-            dialog.show()
+                dialog.show()
+            }
         }
 
-        imageView5.setOnClickListener{
-            var imageView = ImageView(this)
-            var bitmap = (imageView5.drawable as BitmapDrawable).bitmap
-            Log.d("bitmap", bitmap.toString())
-            imageView.setImageBitmap(bitmap)
+        imageView5.setOnClickListener {
+            if (null == imageView5.drawable) {
+                Toast.makeText(this, "データがありません", Toast.LENGTH_SHORT).show()
+                selectPhoto3()
+            } else {
+                var imageView = ImageView(this)
+                var bitmap = (imageView5.drawable as BitmapDrawable).bitmap
+                Log.d("bitmap", bitmap.toString())
+                imageView.setImageBitmap(bitmap)
 
-            var display : Display = windowManager.defaultDisplay
-            var size = Point()
-            display.getSize(size)
-            Log.d("size.x", size.x.toString())
-            Log.d("size.y", size.y.toString())
-            var width = size.x
+                var display: Display = windowManager.defaultDisplay
+                var size = Point()
+                display.getSize(size)
+                Log.d("size.x", size.x.toString())
+                Log.d("size.y", size.y.toString())
+                var width = size.x
 
-            //var a : Float = bitmap.width as Float
-            Log.d("bitmap.width", bitmap.width.toString())
+                //var a : Float = bitmap.width as Float
+                Log.d("bitmap.width", bitmap.width.toString())
 
-            var factor = width.toFloat() / bitmap.width.toFloat()
-            Log.d("factor", factor.toString())
-            imageView.scaleType = ImageView.ScaleType.FIT_CENTER
+                var factor = width.toFloat() / bitmap.width.toFloat()
+                Log.d("factor", factor.toString())
+                imageView.scaleType = ImageView.ScaleType.FIT_CENTER
 
-            var dialog = Dialog(this)
+                var dialog = Dialog(this)
 
-            dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
-            Log.d("width",(bitmap.width*factor).toInt().toString())
+                dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
+                Log.d("width", (bitmap.width * factor).toInt().toString())
 
-            dialog.setContentView(imageView)
-            dialog.window?.setLayout((bitmap.width*factor*0.7).toInt(), (bitmap.height*factor*0.7).toInt())
+                dialog.setContentView(imageView)
+                dialog.window?.setLayout(
+                    (bitmap.width * factor * 0.7).toInt(),
+                    (bitmap.height * factor * 0.7).toInt()
+                )
 
-            dialog.show()
+                dialog.show()
+            }
         }
     }
 
@@ -234,5 +299,143 @@ class DataSelectActivity : AppCompatActivity() {
             }
         }
         Toast.makeText(this, "画像の表示完了", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun takePicture() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+            addCategory(Intent.CATEGORY_DEFAULT)
+            putExtra(MediaStore.EXTRA_OUTPUT, createSaveFileUri())
+        }
+
+        startActivityForResult(intent, REQUEST_CAMERA)
+    }
+
+    private fun selectPhoto1(){
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.type = "image/*"
+        startActivityForResult(intent, REQUEST_GARALLY1 )
+    }
+
+    private fun selectPhoto2(){
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.type = "image/*"
+        startActivityForResult(intent, REQUEST_GARALLY2 )
+    }
+
+    private fun selectPhoto3(){
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.type = "image/*"
+        startActivityForResult(intent, REQUEST_GARALLY3 )
+    }
+
+    private fun checkPermission(): Boolean {
+        val cameraPermission = PackageManager.PERMISSION_GRANTED ==
+                ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.CAMERA)
+
+        val extraStoragePermission = PackageManager.PERMISSION_GRANTED ==
+                ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.CAMERA)
+
+        return cameraPermission && extraStoragePermission
+    }
+
+    private fun grantCameraPermission() =
+        ActivityCompat.requestPermissions(this,
+            arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            PERMISSION_REQUEST)
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK) {
+            val contentValues = ContentValues().apply {
+                put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                put("_data", path)
+            }
+
+            contentResolver.insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+            val user = Users()
+            user.photoName = filename.toString()
+            dbHandler!!.addUser(user)
+
+           /*contentResolver.insert(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+            val user = Users()
+            user.photoName = filename.toString()
+            dbHandler!!.addUser(user)*/
+
+            //val inputStream = FileInputStream(File(path))
+            //val bitmap = BitmapFactory.decodeStream(inputStream)
+            //imageView.setImageBitmap(bitmap)
+            //Toast.makeText(this, "この写真で良ければ更新ボタンでアップロードしてください", Toast.LENGTH_SHORT).show()
+        }else if(requestCode == REQUEST_GARALLY1 && resultCode == Activity.RESULT_OK) {
+            var uri: Uri?
+            if(data != null){
+                uri = data.data
+                try{
+                    //val inputStream = contentResolver.openInputStream(uri)
+                    Log.d("[DEBUG]", uri.toString())
+                    Log.d("[DEBUG]", uri?.path.toString())
+                    var projection = arrayOf(MediaStore.MediaColumns.DISPLAY_NAME)
+                    var cursor = contentResolver.query(uri!!, projection, null, null, null)
+                    if(cursor != null){
+                        var name : String = ""
+                        if(cursor.moveToFirst()){
+                            name = cursor.getString(0)
+                        }
+                        cursor.close()
+                        Log.d("[DEBUG]", name.toString())
+                    }
+                    val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
+                    imageView3.setImageBitmap(bitmap)
+                }catch (e: IOException){
+                }
+            }
+        }else if(requestCode == REQUEST_GARALLY2 && resultCode == Activity.RESULT_OK) {
+            var uri: Uri?
+            if(data != null){
+                uri = data.data
+                try{
+                    //val inputStream = contentResolver.openInputStream(uri)
+                    val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
+                    imageView4.setImageBitmap(bitmap)
+                }catch (e: IOException){
+                }
+            }
+        }else if(requestCode == REQUEST_GARALLY3 && resultCode == Activity.RESULT_OK) {
+            var uri: Uri?
+            if(data != null){
+                uri = data.data
+                try{
+                    //val inputStream = contentResolver.openInputStream(uri)
+                    val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
+                    imageView5.setImageBitmap(bitmap)
+                }catch (e: IOException){
+                }
+            }
+        }
+    }
+
+    private fun createSaveFileUri(): Uri {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.JAPAN).format(Date())
+        val imageFileName = "example" + timeStamp
+
+        val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM + "/example")
+        if (!storageDir.exists()) {
+            storageDir.mkdir()
+        }
+        Log.d("Dir place", storageDir.toString())
+
+        val file = File(storageDir, "$imageFileName.jpg")
+        Log.d("Maked file name", file.toString())
+        filename = "$imageFileName.jpg"
+        path = file.absolutePath
+        Log.d("path", path.toString())
+
+        return FileProvider.getUriForFile(this, "com.example.cloudexample", file)
     }
 }
