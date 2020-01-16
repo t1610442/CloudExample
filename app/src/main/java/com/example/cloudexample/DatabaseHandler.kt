@@ -11,7 +11,7 @@ class DatabaseHandler(context: Context) :
 
     override fun onCreate(db: SQLiteDatabase?) {
         //val CREATE_TABLE = "CREATE TABLE $TABLE_NAME " +
-                "($ID Integer PRIMARY KEY, $DIARY_TITLE TEXT, $DIARY_DAY TEXT, $PHOTO_NAME TEXT)"
+                //"($ID Integer PRIMARY KEY, $DIARY_TITLE TEXT, $DIARY_DAY TEXT, $PHOTO_NAME TEXT)"
         val CREATE_TABLE = "CREATE TABLE $TABLE_NAME " +
                 "($ID Integer PRIMARY KEY, $PHOTO_NAME TEXT)"
         db?.execSQL(CREATE_TABLE)
@@ -47,6 +47,7 @@ class DatabaseHandler(context: Context) :
         Log.v("InsertedID", "$_success")
         return (Integer.parseInt("$_success") != -1)
     }
+
     //get all users
     /*
     fun getAllUsers(): List<PhotoData> {
