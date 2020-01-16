@@ -3,13 +3,10 @@ package com.example.cloudexample
 import android.Manifest
 import android.app.Activity
 import android.app.Dialog
-import android.content.ContentResolver
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
-import android.graphics.ImageDecoder
 import android.graphics.Point
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
@@ -19,9 +16,11 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.Display
+import android.view.View
 import android.view.Window
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
@@ -61,6 +60,8 @@ class DataSelectActivity : AppCompatActivity() {
 
         var buttonsList = arrayListOf<Button>(button_user1, button_user2, button_user3, button_user4, button_user5)
         var imageList = arrayListOf<ImageView>(imageView3, imageView4, imageView5)
+        var name = user.userName
+        textView_user.text = name + "さんが選んだ写真の画面です"
         val querySelect = NCMBQuery<NCMBObject>("photoPath")
         //var objList = listOf<NCMBObject>()
         querySelect.findInBackground { objects, error ->
@@ -96,6 +97,8 @@ class DataSelectActivity : AppCompatActivity() {
 
         //user1の画像データ表示用のボタン
         button_user1.setOnClickListener {
+            name = button_user1.text.toString()
+            textView_user.text = name + "さんが選んだ写真の画面です"
             if(objList.isEmpty()){
                 Toast.makeText(this, "データがありません", Toast.LENGTH_SHORT).show()
             }else {
@@ -106,6 +109,8 @@ class DataSelectActivity : AppCompatActivity() {
 
         //user2の画像データ表示用のボタン
         button_user2.setOnClickListener {
+            name = button_user2.text.toString()
+            textView_user.text = name + "さんが選んだ写真の画面です"
             if(objList.size < 2){
                 Toast.makeText(this, "データがありません", Toast.LENGTH_SHORT).show()
             }else{
@@ -116,6 +121,8 @@ class DataSelectActivity : AppCompatActivity() {
 
         //user3の画像データ表示用のボタン
         button_user3.setOnClickListener {
+            name = button_user3.text.toString()
+            textView_user.text = name + "さんが選んだ写真の画面です"
             if(objList.size < 3){
                 Toast.makeText(this, "データがありません", Toast.LENGTH_SHORT).show()
             }else{
@@ -126,6 +133,8 @@ class DataSelectActivity : AppCompatActivity() {
 
         //user4の画像データ表示用のボタン
         button_user4.setOnClickListener {
+            name = button_user4.text.toString()
+            textView_user.text = name + "さんが選んだ写真の画面です"
             if(objList.size < 4){
                 Toast.makeText(this, "データがありません", Toast.LENGTH_SHORT).show()
             }else{
@@ -136,6 +145,8 @@ class DataSelectActivity : AppCompatActivity() {
 
         //user5の画像データ表示用のボタン
         button_user5.setOnClickListener {
+            name = button_user5.text.toString()
+            textView_user.text = name + "さんが選んだ写真の画面です"
             if(objList.size < 5){
                 Toast.makeText(this, "データがありません", Toast.LENGTH_SHORT).show()
             }else{
@@ -149,34 +160,35 @@ class DataSelectActivity : AppCompatActivity() {
                 Toast.makeText(this, "データがありません", Toast.LENGTH_SHORT).show()
                 selectPhoto1()
             }else {
-                var imageView = ImageView(this)
+                var dialog = Dialog(this)
+                dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
                 var bitmap = (imageView3.drawable as BitmapDrawable).bitmap
-                Log.d("bitmap", bitmap.toString())
-                imageView.setImageBitmap(bitmap)
+                val customdialogView: View = layoutInflater.inflate(R.layout.custom_dialog_layout, null)
+                dialog.setContentView(customdialogView)
+                Log.d("bitmap", bitmap.width.toString())
+                //imageView.setImageBitmap(bitmap)
+                var imageView_dialog = customdialogView.findViewById<ImageView>(R.id.imageView_dialog)
+                imageView_dialog.setImageBitmap(bitmap)
+                var textView4 = customdialogView.findViewById<TextView>(R.id.textView4)
+                textView4.text = "dialog"
+                var btn_change = customdialogView.findViewById<Button>(R.id.btn_change)
+                btn_change.setOnClickListener {
+                    selectPhoto1()
+                }
+
+                var btn_close = customdialogView.findViewById<Button>(R.id.btn_close)
+                btn_close.setOnClickListener {
+                    dialog.dismiss()
+                }
 
                 var display: Display = windowManager.defaultDisplay
                 var size = Point()
                 display.getSize(size)
-                Log.d("size.x", size.x.toString())
-                Log.d("size.y", size.y.toString())
                 var width = size.x
-
-                //var a : Float = bitmap.width as Float
-                Log.d("bitmap.width", bitmap.width.toString())
-
                 var factor = width.toFloat() / bitmap.width.toFloat()
-                Log.d("factor", factor.toString())
-                imageView.scaleType = ImageView.ScaleType.FIT_CENTER
-
-                var dialog = Dialog(this)
-
-                dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
-                Log.d("width", (bitmap.width * factor).toInt().toString())
-
-                dialog.setContentView(imageView)
                 dialog.window?.setLayout(
-                    (bitmap.width * factor * 0.7).toInt(),
-                    (bitmap.height * factor * 0.7).toInt()
+                    (bitmap.width * factor).toInt(),
+                    (bitmap.height * factor *0.7).toInt()
                 )
 
                 dialog.show()
@@ -188,34 +200,35 @@ class DataSelectActivity : AppCompatActivity() {
                 Toast.makeText(this, "データがありません", Toast.LENGTH_SHORT).show()
                 selectPhoto2()
             }else {
-                var imageView = ImageView(this)
+                var dialog = Dialog(this)
+                dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
                 var bitmap = (imageView4.drawable as BitmapDrawable).bitmap
-                Log.d("bitmap", bitmap.toString())
-                imageView.setImageBitmap(bitmap)
+                val customdialogView: View = layoutInflater.inflate(R.layout.custom_dialog_layout, null)
+                dialog.setContentView(customdialogView)
+                Log.d("bitmap", bitmap.width.toString())
+                //imageView.setImageBitmap(bitmap)
+                var imageView_dialog = customdialogView.findViewById<ImageView>(R.id.imageView_dialog)
+                imageView_dialog.setImageBitmap(bitmap)
+                var textView4 = customdialogView.findViewById<TextView>(R.id.textView4)
+                textView4.text = "dialog"
+                var btn_change = customdialogView.findViewById<Button>(R.id.btn_change)
+                btn_change.setOnClickListener {
+                    selectPhoto1()
+                }
+
+                var btn_close = customdialogView.findViewById<Button>(R.id.btn_close)
+                btn_close.setOnClickListener {
+                    dialog.dismiss()
+                }
 
                 var display: Display = windowManager.defaultDisplay
                 var size = Point()
                 display.getSize(size)
-                Log.d("size.x", size.x.toString())
-                Log.d("size.y", size.y.toString())
                 var width = size.x
-
-                //var a : Float = bitmap.width as Float
-                Log.d("bitmap.width", bitmap.width.toString())
-
                 var factor = width.toFloat() / bitmap.width.toFloat()
-                Log.d("factor", factor.toString())
-                imageView.scaleType = ImageView.ScaleType.FIT_CENTER
-
-                var dialog = Dialog(this)
-
-                dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
-                Log.d("width", (bitmap.width * factor).toInt().toString())
-
-                dialog.setContentView(imageView)
                 dialog.window?.setLayout(
-                    (bitmap.width * factor * 0.7).toInt(),
-                    (bitmap.height * factor * 0.7).toInt()
+                    (bitmap.width * factor).toInt(),
+                    (bitmap.height * factor *0.7).toInt()
                 )
 
                 dialog.show()
@@ -227,34 +240,35 @@ class DataSelectActivity : AppCompatActivity() {
                 Toast.makeText(this, "データがありません", Toast.LENGTH_SHORT).show()
                 selectPhoto3()
             } else {
-                var imageView = ImageView(this)
+                var dialog = Dialog(this)
+                dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
                 var bitmap = (imageView5.drawable as BitmapDrawable).bitmap
-                Log.d("bitmap", bitmap.toString())
-                imageView.setImageBitmap(bitmap)
+                val customdialogView: View = layoutInflater.inflate(R.layout.custom_dialog_layout, null)
+                dialog.setContentView(customdialogView)
+                Log.d("bitmap", bitmap.width.toString())
+                //imageView.setImageBitmap(bitmap)
+                var imageView_dialog = customdialogView.findViewById<ImageView>(R.id.imageView_dialog)
+                imageView_dialog.setImageBitmap(bitmap)
+                var textView4 = customdialogView.findViewById<TextView>(R.id.textView4)
+                textView4.text = "dialog"
+                var btn_change = customdialogView.findViewById<Button>(R.id.btn_change)
+                btn_change.setOnClickListener {
+                    selectPhoto1()
+                }
+
+                var btn_close = customdialogView.findViewById<Button>(R.id.btn_close)
+                btn_close.setOnClickListener {
+                    dialog.dismiss()
+                }
 
                 var display: Display = windowManager.defaultDisplay
                 var size = Point()
                 display.getSize(size)
-                Log.d("size.x", size.x.toString())
-                Log.d("size.y", size.y.toString())
                 var width = size.x
-
-                //var a : Float = bitmap.width as Float
-                Log.d("bitmap.width", bitmap.width.toString())
-
                 var factor = width.toFloat() / bitmap.width.toFloat()
-                Log.d("factor", factor.toString())
-                imageView.scaleType = ImageView.ScaleType.FIT_CENTER
-
-                var dialog = Dialog(this)
-
-                dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
-                Log.d("width", (bitmap.width * factor).toInt().toString())
-
-                dialog.setContentView(imageView)
                 dialog.window?.setLayout(
-                    (bitmap.width * factor * 0.7).toInt(),
-                    (bitmap.height * factor * 0.7).toInt()
+                    (bitmap.width * factor).toInt(),
+                    (bitmap.height * factor *0.7).toInt()
                 )
 
                 dialog.show()
