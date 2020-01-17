@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.graphics.drawable.BitmapDrawable
@@ -75,7 +76,7 @@ class DataSelectActivity : AppCompatActivity() {
                     buttonsList[i-1].text = objList[i-1].getString("name")
                     if(user.userName == buttonsList[i-1].text){
                         if(objList[i-1].getList("array") != null) {
-                            setImages(objList[i - 1].getList("array"), imageList)
+                            //setImages(objList[i - 1].getList("array"), imageList)
                         }
                         usernumber = i-1
                     }
@@ -144,7 +145,7 @@ class DataSelectActivity : AppCompatActivity() {
                 Toast.makeText(this, "データがありません", Toast.LENGTH_SHORT).show()
             }else {
                 setImages(objList[0].getList("array"), imageList)
-                //setImages2(objList[0].getList("array"))
+                Toast.makeText(this, "画像の表示完了", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -156,7 +157,7 @@ class DataSelectActivity : AppCompatActivity() {
                 Toast.makeText(this, "データがありません", Toast.LENGTH_SHORT).show()
             }else{
                 setImages(objList[1].getList("array"), imageList)
-                //setImages2(objList[1].getList("array"))
+                Toast.makeText(this, "画像の表示完了", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -168,7 +169,7 @@ class DataSelectActivity : AppCompatActivity() {
                 Toast.makeText(this, "データがありません", Toast.LENGTH_SHORT).show()
             }else{
                 setImages(objList[2].getList("array"), imageList)
-                //setImages2(objList[2].getList("array"))
+                Toast.makeText(this, "画像の表示完了", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -180,7 +181,7 @@ class DataSelectActivity : AppCompatActivity() {
                 Toast.makeText(this, "データがありません", Toast.LENGTH_SHORT).show()
             }else{
                 setImages(objList[3].getList("array"), imageList)
-                //setImages2(objList[3].getList("array"))
+                Toast.makeText(this, "画像の表示完了", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -192,7 +193,7 @@ class DataSelectActivity : AppCompatActivity() {
                 Toast.makeText(this, "データがありません", Toast.LENGTH_SHORT).show()
             }else{
                 setImages(objList[4].getList("array"), imageList)
-                //setImages2(objList[4].getList("array"))
+                Toast.makeText(this, "画像の表示完了", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -322,6 +323,7 @@ class DataSelectActivity : AppCompatActivity() {
         Toast.makeText(this, "画像を準備中", Toast.LENGTH_SHORT).show()
         val query: NCMBQuery<NCMBFile> = NCMBFile.getQuery()
         val listSize = selectName.size-1
+        var bMapList = arrayListOf<Bitmap>()
         for (i in 0..listSize) {
             query.whereEqualTo("fileName", selectName[i])
             query.findInBackground { list, ncmbException ->
@@ -340,21 +342,19 @@ class DataSelectActivity : AppCompatActivity() {
                         } else {
                             //成功処理
                             val bMap = BitmapFactory.decodeByteArray(dataFetch, 0, dataFetch.size)
-                            //*f(i==0) imageView3.setImageBitmap(bMap)
-                            //else if(i==1) imageView4.setImageBitmap(bMap)
-                            //else {
-                            //  imageView5.setImageBitmap(bMap)
-                            //}
+                            //bMapList[i] = bMap
+                            //Log.d("d346", bMapList[i].toString())
                             imageName[i].setImageBitmap(bMap)
-                            //val inputStream = FileInputStream(File(path))
-                            //val bitmap = BitmapFactory.decodeStream(inputStream)
-                            //imageView2.setImageBitmap(bitmap)
                         }
                     }
                 }
             }
         }
-        Toast.makeText(this, "画像の表示完了", Toast.LENGTH_SHORT).show()
+        //Thread.sleep(3000)
+        /*for(i in 0..listSize){
+            imageName[i].setImageBitmap(bMapList[i])
+        }*/
+        //Toast.makeText(this, "画像の表示完了", Toast.LENGTH_SHORT).show()
     }
 
     private fun takePicture() {
@@ -664,7 +664,7 @@ class DataSelectActivity : AppCompatActivity() {
                         }
                     }
                     val bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
-                    imageView4.setImageBitmap(bitmap)
+                    imageView5.setImageBitmap(bitmap)
                 }catch (e: IOException){
                 }
             }
