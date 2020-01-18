@@ -21,10 +21,10 @@ class SecondActivity : AppCompatActivity() {
         var imageList = arrayListOf<ImageView>(imageView01, imageView02, imageView03)
 
         button5.setOnClickListener {
-            val photoNameList = dbHandler.getAllData()
+            //val photoNameList = dbHandler.getAllData()
             val query: NCMBQuery<NCMBFile> = NCMBFile.getQuery()
             for (i in 0..2) {
-                query.whereEqualTo("fileName", photoNameList[i])
+                //query.whereEqualTo("fileName", photoNameList[i])
                 query.findInBackground { list, ncmbException ->
                     if (ncmbException != null) {
                         Log.d("[Error]", ncmbException.toString())

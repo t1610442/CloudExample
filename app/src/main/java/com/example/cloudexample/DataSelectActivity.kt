@@ -49,13 +49,13 @@ class DataSelectActivity : AppCompatActivity() {
     private val PERMISSION_REQUEST = 1010
     private var path: String =""
     private var filename: String = ""
-    private var usernumber = 0
+    private var myNumber = 0
+    private var displayNumber = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_data_select)
 
-        //val user = NCMBUser.getCurrentUser()
         Log.d("name", user.userName.toString())
         Log.d("objectId", user.objectId.toString())
 
@@ -64,7 +64,6 @@ class DataSelectActivity : AppCompatActivity() {
         var name = user.userName
         textView_user.text = name + "さんが選んだ写真の画面です"
         val querySelect = NCMBQuery<NCMBObject>("photoPath")
-        //var objList = listOf<NCMBObject>()
         querySelect.findInBackground { objects, error ->
             if (error != null) {
                 Log.d("[Error69]", error.toString())
@@ -78,14 +77,13 @@ class DataSelectActivity : AppCompatActivity() {
                         if(objList[i-1].getList("array") != null) {
                             //setImages(objList[i - 1].getList("array"), imageList)
                         }
-                        usernumber = i-1
+                        myNumber = i-1
                     }
                 }
                 Log.d("[DEBUG83]", objList.size.toString())
             }
         }
         val queryphoto = NCMBQuery<NCMBObject>("photoPath")
-        //var abc = NCMBObject("photoPath")
         queryphoto.whereEqualTo("userID", user.objectId.toString())
         queryphoto.findInBackground {objects, error ->
             if (error != null) {
@@ -100,8 +98,8 @@ class DataSelectActivity : AppCompatActivity() {
             }
         }
 
+        //更新用のボタン
         button_update.setOnClickListener {
-            //objList = listOf<NCMBObject>()
             querySelect.findInBackground { objects, error ->
                 if (error != null) {
                     Log.d("[Error106]", error.toString())
@@ -115,19 +113,18 @@ class DataSelectActivity : AppCompatActivity() {
                             if(objList[i-1].getList("array") != null) {
                                 setImages(objList[i - 1].getList("array"), imageList)
                             }
-                            usernumber = i-1
+                            myNumber = i-1
                         }
                     }
                     Log.d("[DEBUG120]", objList.size.toString())
                 }
+                Toast.makeText(this, "更新完了", Toast.LENGTH_SHORT).show()
             }
+            textView_user.text = user.userName + "さんが選んだ写真の画面です"
         }
 
         //カメラ撮影用のボタン
-        button_user_update.setOnClickListener {
-            /*for(i in 1..objList.size){
-                buttonsList[i-1].text = objList[i-1].getString("name")
-            }*/
+        button_camera.setOnClickListener {
             Intent(MediaStore.ACTION_IMAGE_CAPTURE).resolveActivity(packageManager)?.let {
                 if (checkPermission()) {
                     takePicture()
@@ -140,6 +137,8 @@ class DataSelectActivity : AppCompatActivity() {
         //user1の画像データ表示用のボタン
         button_user1.setOnClickListener {
             name = button_user1.text.toString()
+            displayNumber = 1
+            deleteImages()
             textView_user.text = name + "さんが選んだ写真の画面です"
             if(objList.isEmpty()){
                 Toast.makeText(this, "データがありません", Toast.LENGTH_SHORT).show()
@@ -152,6 +151,8 @@ class DataSelectActivity : AppCompatActivity() {
         //user2の画像データ表示用のボタン
         button_user2.setOnClickListener {
             name = button_user2.text.toString()
+            displayNumber = 2
+            deleteImages()
             textView_user.text = name + "さんが選んだ写真の画面です"
             if(objList.size < 2){
                 Toast.makeText(this, "データがありません", Toast.LENGTH_SHORT).show()
@@ -164,6 +165,8 @@ class DataSelectActivity : AppCompatActivity() {
         //user3の画像データ表示用のボタン
         button_user3.setOnClickListener {
             name = button_user3.text.toString()
+            displayNumber = 3
+            deleteImages()
             textView_user.text = name + "さんが選んだ写真の画面です"
             if(objList.size < 3){
                 Toast.makeText(this, "データがありません", Toast.LENGTH_SHORT).show()
@@ -176,6 +179,8 @@ class DataSelectActivity : AppCompatActivity() {
         //user4の画像データ表示用のボタン
         button_user4.setOnClickListener {
             name = button_user4.text.toString()
+            displayNumber = 4
+            deleteImages()
             textView_user.text = name + "さんが選んだ写真の画面です"
             if(objList.size < 4){
                 Toast.makeText(this, "データがありません", Toast.LENGTH_SHORT).show()
@@ -188,6 +193,8 @@ class DataSelectActivity : AppCompatActivity() {
         //user5の画像データ表示用のボタン
         button_user5.setOnClickListener {
             name = button_user5.text.toString()
+            displayNumber = 5
+            deleteImages()
             textView_user.text = name + "さんが選んだ写真の画面です"
             if(objList.size < 5){
                 Toast.makeText(this, "データがありません", Toast.LENGTH_SHORT).show()
@@ -208,14 +215,18 @@ class DataSelectActivity : AppCompatActivity() {
                 val customdialogView: View = layoutInflater.inflate(R.layout.custom_dialog_layout, null)
                 dialog.setContentView(customdialogView)
                 Log.d("bitmap", bitmap.width.toString())
-                //imageView.setImageBitmap(bitmap)
                 val imageView_dialog = customdialogView.findViewById<ImageView>(R.id.imageView_dialog)
                 imageView_dialog.setImageBitmap(bitmap)
                 val textView4 = customdialogView.findViewById<TextView>(R.id.textView4)
                 textView4.text = "dialog"
                 val btn_change = customdialogView.findViewById<Button>(R.id.btn_change)
                 btn_change.setOnClickListener {
-                    selectPhoto1()
+                    if(displayNumber == myNumber) {
+                        selectPhoto1()
+                        Toast.makeText(this, "写真の差し替えに成功しました", Toast.LENGTH_SHORT).show()
+                    }else{
+                        Toast.makeText(this, "他の人の写真は差し替えられません", Toast.LENGTH_SHORT).show()
+                    }
                 }
 
                 val btn_close = customdialogView.findViewById<Button>(R.id.btn_close)
@@ -248,14 +259,18 @@ class DataSelectActivity : AppCompatActivity() {
                 val customdialogView: View = layoutInflater.inflate(R.layout.custom_dialog_layout, null)
                 dialog.setContentView(customdialogView)
                 Log.d("bitmap", bitmap.width.toString())
-                //imageView.setImageBitmap(bitmap)
                 var imageView_dialog = customdialogView.findViewById<ImageView>(R.id.imageView_dialog)
                 imageView_dialog.setImageBitmap(bitmap)
                 var textView4 = customdialogView.findViewById<TextView>(R.id.textView4)
                 textView4.text = "dialog"
                 var btn_change = customdialogView.findViewById<Button>(R.id.btn_change)
                 btn_change.setOnClickListener {
-                    selectPhoto2()
+                    if(displayNumber == myNumber) {
+                        selectPhoto2()
+                        Toast.makeText(this, "写真の差し替えに成功しました", Toast.LENGTH_SHORT).show()
+                    }else{
+                        Toast.makeText(this, "他の人の写真は差し替えられません", Toast.LENGTH_SHORT).show()
+                    }
                 }
 
                 var btn_close = customdialogView.findViewById<Button>(R.id.btn_close)
@@ -288,14 +303,18 @@ class DataSelectActivity : AppCompatActivity() {
                 val customdialogView: View = layoutInflater.inflate(R.layout.custom_dialog_layout, null)
                 dialog.setContentView(customdialogView)
                 Log.d("bitmap", bitmap.width.toString())
-                //imageView.setImageBitmap(bitmap)
                 var imageView_dialog = customdialogView.findViewById<ImageView>(R.id.imageView_dialog)
                 imageView_dialog.setImageBitmap(bitmap)
                 var textView4 = customdialogView.findViewById<TextView>(R.id.textView4)
                 textView4.text = "dialog"
                 var btn_change = customdialogView.findViewById<Button>(R.id.btn_change)
                 btn_change.setOnClickListener {
-                    selectPhoto3()
+                    if(displayNumber == myNumber) {
+                        selectPhoto3()
+                        Toast.makeText(this, "写真の差し替えに成功しました", Toast.LENGTH_SHORT).show()
+                    }else{
+                        Toast.makeText(this, "他の人の写真は差し替えられません", Toast.LENGTH_SHORT).show()
+                    }
                 }
 
                 var btn_close = customdialogView.findViewById<Button>(R.id.btn_close)
@@ -318,8 +337,13 @@ class DataSelectActivity : AppCompatActivity() {
         }
     }
 
+    private fun deleteImages(){
+        imageView3.setImageDrawable(null)
+        imageView4.setImageDrawable(null)
+        imageView5.setImageDrawable(null)
+    }
+
     private fun setImages(selectName: List<*>, imageName: ArrayList<ImageView>){
-        //Log.d("button9", selectName.toString())
         Toast.makeText(this, "画像を準備中", Toast.LENGTH_SHORT).show()
         val query: NCMBQuery<NCMBFile> = NCMBFile.getQuery()
         val listSize = selectName.size-1
@@ -413,28 +437,16 @@ class DataSelectActivity : AppCompatActivity() {
             contentResolver.insert(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
 
-            val user = Users()
-            user.photoName = filename.toString()
-            dbHandler!!.addUser(user)
+            //val user = Users()
+            //user.photoName = filename.toString()
+            //dbHandler!!.addUser(user)
 
-           /*contentResolver.insert(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
-
-            val user = Users()
-            user.photoName = filename.toString()
-            dbHandler!!.addUser(user)*/
-
-            //val inputStream = FileInputStream(File(path))
-            //val bitmap = BitmapFactory.decodeStream(inputStream)
-            //imageView.setImageBitmap(bitmap)
-            //Toast.makeText(this, "この写真で良ければ更新ボタンでアップロードしてください", Toast.LENGTH_SHORT).show()
         }else if(requestCode == REQUEST_GARALLY1 && resultCode == Activity.RESULT_OK) {
             Log.d("deb", "REQUEST_GARALLY1")
             var uri: Uri?
             if(data != null){
                 uri = data.data
                 try{
-                    //val inputStream = contentResolver.openInputStream(uri)
                     Log.d("[DEBUG438]", uri.toString())
                     Log.d("[DEBUG439]", uri?.path.toString())
                     var strDocId = DocumentsContract.getDocumentId(uri)
@@ -481,9 +493,7 @@ class DataSelectActivity : AppCompatActivity() {
                             }
                             var updateList = abc.getList("array")
                             var photoNameListCloud = arrayListOf<String>()
-                            //Log.d("deb", updateList.toString())
                             if(updateList == null){
-                                //updateList!!.add(0, name.substringAfterLast("/"))
                                 photoNameListCloud.add(name.substringAfterLast("/"))
                                 abc.put("array", photoNameListCloud)
                             }else{
@@ -514,7 +524,6 @@ class DataSelectActivity : AppCompatActivity() {
             if(data != null){
                 uri = data.data
                 try{
-                    //val inputStream = contentResolver.openInputStream(uri)
                     Log.d("[DEBUG]", uri.toString())
                     Log.d("[DEBUG]", uri?.path.toString())
                     var strDocId = DocumentsContract.getDocumentId(uri)
@@ -593,7 +602,6 @@ class DataSelectActivity : AppCompatActivity() {
             if(data != null){
                 uri = data.data
                 try{
-                    //val inputStream = contentResolver.openInputStream(uri)
                     Log.d("[DEBUG]", uri.toString())
                     Log.d("[DEBUG]", uri?.path.toString())
                     var strDocId = DocumentsContract.getDocumentId(uri)
@@ -672,7 +680,7 @@ class DataSelectActivity : AppCompatActivity() {
     }
 
     private fun createSaveFileUri(): Uri {
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.JAPAN).format(Date())
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmssSSS", Locale.JAPAN).format(Date())
         val imageFileName = "example" + timeStamp
 
         val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM + "/example")

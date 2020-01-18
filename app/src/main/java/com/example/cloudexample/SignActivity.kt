@@ -13,6 +13,8 @@ import com.nifcloud.mbaas.core.NCMBUser
 import kotlinx.android.synthetic.main.activity_sign.*
 
 class SignActivity : AppCompatActivity() {
+    
+    private var state = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,9 +35,14 @@ class SignActivity : AppCompatActivity() {
 
         //メイン画面遷移用のボタン
         btnMainAct.setOnClickListener {
-            //makeObj()
-            val intent = Intent(this, DataSelectActivity::class.java)
-            startActivity(intent)
+            if(!state){
+                Toast.makeText(this, "ログインしていないためオフラインでの使用になります", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            }else {
+                val intent = Intent(this, DataSelectActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 
@@ -64,6 +71,7 @@ class SignActivity : AppCompatActivity() {
                 Log.d("[Error2]", e.toString())
             } else {
                 (findViewById(R.id.lblStats) as TextView).text = "Log in successful by ${ncmbUser.userName}"
+                state = true
             }
 
         })

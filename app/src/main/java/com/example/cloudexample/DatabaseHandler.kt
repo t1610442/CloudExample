@@ -10,10 +10,8 @@ class DatabaseHandler(context: Context) :
     SQLiteOpenHelper(context, DB_NAME, null, DB_VERSIOM) {
 
     override fun onCreate(db: SQLiteDatabase?) {
-        //val CREATE_TABLE = "CREATE TABLE $TABLE_NAME " +
-                //"($ID Integer PRIMARY KEY, $DIARY_TITLE TEXT, $DIARY_DAY TEXT, $PHOTO_NAME TEXT)"
         val CREATE_TABLE = "CREATE TABLE $TABLE_NAME " +
-                "($ID Integer PRIMARY KEY, $PHOTO_NAME TEXT)"
+                "($ID Integer PRIMARY KEY, $DIARY_TITLE TEXT, $DIARY_DAY TEXT, $PHOTO_PATH TEXT)"
         db?.execSQL(CREATE_TABLE)
     }
 
@@ -26,22 +24,9 @@ class DatabaseHandler(context: Context) :
         //Create and/or open a database that will be used for reading and writing.
         val db = this.writableDatabase
         val values = ContentValues()
-        //values.put(DIARY_TITLE, user.diaryTitle)
-        //values.put(DIARY_DAY, user.diaryDay)
-        values.put(PHOTO_NAME, user.photoName)
-        val _success = db.insert(TABLE_NAME, null, values)
-        db.close()
-        Log.v("InsertedID", "$_success")
-        return (Integer.parseInt("$_success") != -1)
-    }
-
-    fun addPhoto(user: Users): Boolean {
-        //Create and/or open a database that will be used for reading and writing.
-        val db = this.writableDatabase
-        val values = ContentValues()
-        //values.put(DIARY_TITLE, user.diaryTitle)
-        //values.put(DIARY_DAY, user.diaryDay)
-        values.put(PHOTO_NAME, user.photoName)
+        values.put(DIARY_TITLE, user.diaryTitle)
+        values.put(DIARY_DAY, user.diaryDay)
+        values.put(PHOTO_PATH, user.photoPath)
         val _success = db.insert(TABLE_NAME, null, values)
         db.close()
         Log.v("InsertedID", "$_success")
@@ -49,8 +34,7 @@ class DatabaseHandler(context: Context) :
     }
 
     //get all users
-    /*
-    fun getAllUsers(): List<PhotoData> {
+    fun getAllUsers(): List<DiaryData> {
         //var allUser: String = ""
         //var data = arrayListOf<Triple<String, String, String>>()
         //var contents: String = ""
@@ -76,7 +60,7 @@ class DatabaseHandler(context: Context) :
                     //data.add(info)
                     diaryTitles.add(cursor.getString(cursor.getColumnIndex(DIARY_TITLE)))
                     diaryDays.add(cursor.getString(cursor.getColumnIndex(DIARY_DAY)))
-                    photoPaths.add(cursor.getString(cursor.getColumnIndex(PHOTO_NAME)))
+                    photoPaths.add(cursor.getString(cursor.getColumnIndex(PHOTO_PATH)))
 
                     //allUser = "$allUser\n$id $diaryTitle"
                 } while (cursor.moveToNext())
@@ -85,49 +69,9 @@ class DatabaseHandler(context: Context) :
         cursor.close()
         db.close()
         //return allUser
-        val allDiaries = List(diaryTitles.size) { i -> PhotoData(diaryTitles[i], diaryDays[i], photoPaths[i]) }
+        val allDiaries = List(diaryTitles.size) { i -> DiaryData(diaryTitles[i], diaryDays[i], photoPaths[i]) }
 
         return allDiaries
-    }*/
-
-    fun getAllData(): ArrayList<String> {
-        //var allUser: String = ""
-        //var data = arrayListOf<Triple<String, String, String>>()
-        //var contents: String = ""
-        //var diaryTitles = arrayListOf<String>()
-        //var diaryDays = arrayListOf<String>()
-        var photoPaths = arrayListOf<String>()
-
-        val db = readableDatabase
-        val selectALLQuery = "SELECT * FROM $TABLE_NAME"
-        val cursor = db.rawQuery(selectALLQuery, null)
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                do {
-
-                    //var id = cursor.getString(cursor.getColumnIndex(ID))
-                    //var diaryTitle = cursor.getString(cursor.getColumnIndex(DIARY_TITLE))
-                    //var diaryDay = cursor.getString(cursor.getColumnIndex(DIARY_DAY))
-                    //var photoPath = cursor.getString(cursor.getColumnIndex(PHOTO_PATH))
-                    //var info = Triple(diaryTitle,diaryDay,photoPath)
-                    //allUser = "$allUser\n$id $diaryTitle $diaryDay $photoPath"
-                    //contents = "$diaryTitle  ($diaryDay) $photoPath"
-                    //data.add(contents)
-                    //data.add(info)
-                   // diaryTitles.add(cursor.getString(cursor.getColumnIndex(DIARY_TITLE)))
-                    //diaryDays.add(cursor.getString(cursor.getColumnIndex(DIARY_DAY)))
-                    photoPaths.add(0, cursor.getString(cursor.getColumnIndex(PHOTO_NAME)))
-
-                    //allUser = "$allUser\n$id $diaryTitle"
-                } while (cursor.moveToNext())
-            }
-        }
-        cursor.close()
-        db.close()
-        //return allUser
-        //val allDiaries = List(diaryTitles.size) { i -> PhotoData(diaryTitles[i], diaryDays[i], photoPaths[i]) }
-
-        return photoPaths
     }
 
     companion object {
@@ -137,6 +81,6 @@ class DatabaseHandler(context: Context) :
         private val ID = "id"
         private val DIARY_TITLE = "DiaryTitle"
         private val DIARY_DAY = "DiaryDay"
-        private val PHOTO_NAME = "PhotoName"
+        private val PHOTO_PATH = "PhotoPath"
     }
 }
