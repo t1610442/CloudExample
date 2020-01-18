@@ -13,54 +13,45 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="101dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.22000003" />
-
     <Button
         android:id="@+id/btn_change"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_width="120dp"
+        android:layout_height="110dp"
         android:layout_marginBottom="8dp"
         android:text="差し替える"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="19sp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_close"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView_dialog" />
 
     <Button
         android:id="@+id/btn_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="120dp"
+        android:layout_height="110dp"
         android:text="閉じる"
+        android:textSize="19sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/btn_speaker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="話し手"
-        app:layout_constraintBottom_toTopOf="@+id/btn_change"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView_dialog" />
 
     <Button
+        android:id="@+id/btn_speaker"
+        android:layout_width="120dp"
+        android:layout_height="110dp"
+        android:text="話し手"
+        android:textSize="19sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageView_dialog"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
         android:id="@+id/btn_listener"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="120dp"
+        android:layout_height="110dp"
+        android:layout_marginTop="8dp"
         android:text="聞き手"
-        app:layout_constraintBottom_toTopOf="@+id/btn_close"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:textSize="19sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageView_dialog"
+        app:layout_constraintTop_toBottomOf="@+id/btn_speaker" />
 </androidx.constraintlayout.widget.ConstraintLayout>

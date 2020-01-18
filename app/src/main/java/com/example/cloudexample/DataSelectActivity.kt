@@ -80,6 +80,7 @@ class DataSelectActivity : AppCompatActivity() {
                         myNumber = i-1
                     }
                 }
+                Log.d("[DEBUG83]", myNumber.toString())
                 Log.d("[DEBUG83]", objList.size.toString())
             }
         }
@@ -114,9 +115,12 @@ class DataSelectActivity : AppCompatActivity() {
                                 setImages(objList[i - 1].getList("array"), imageList)
                             }
                             myNumber = i-1
+                            displayNumber = i-1
                         }
                     }
                     Log.d("[DEBUG120]", objList.size.toString())
+                    Log.d("[DEBUG122]", myNumber.toString())
+                    Log.d("[DEBUG123]", displayNumber.toString())
                 }
                 Toast.makeText(this, "更新完了", Toast.LENGTH_SHORT).show()
             }
@@ -137,7 +141,7 @@ class DataSelectActivity : AppCompatActivity() {
         //user1の画像データ表示用のボタン
         button_user1.setOnClickListener {
             name = button_user1.text.toString()
-            displayNumber = 1
+            displayNumber = 0
             deleteImages()
             textView_user.text = name + "さんが選んだ写真の画面です"
             if(objList.isEmpty()){
@@ -151,7 +155,7 @@ class DataSelectActivity : AppCompatActivity() {
         //user2の画像データ表示用のボタン
         button_user2.setOnClickListener {
             name = button_user2.text.toString()
-            displayNumber = 2
+            displayNumber = 1
             deleteImages()
             textView_user.text = name + "さんが選んだ写真の画面です"
             if(objList.size < 2){
@@ -165,7 +169,7 @@ class DataSelectActivity : AppCompatActivity() {
         //user3の画像データ表示用のボタン
         button_user3.setOnClickListener {
             name = button_user3.text.toString()
-            displayNumber = 3
+            displayNumber = 2
             deleteImages()
             textView_user.text = name + "さんが選んだ写真の画面です"
             if(objList.size < 3){
@@ -179,7 +183,7 @@ class DataSelectActivity : AppCompatActivity() {
         //user4の画像データ表示用のボタン
         button_user4.setOnClickListener {
             name = button_user4.text.toString()
-            displayNumber = 4
+            displayNumber = 3
             deleteImages()
             textView_user.text = name + "さんが選んだ写真の画面です"
             if(objList.size < 4){
@@ -193,7 +197,7 @@ class DataSelectActivity : AppCompatActivity() {
         //user5の画像データ表示用のボタン
         button_user5.setOnClickListener {
             name = button_user5.text.toString()
-            displayNumber = 5
+            displayNumber = 4
             deleteImages()
             textView_user.text = name + "さんが選んだ写真の画面です"
             if(objList.size < 5){
@@ -217,13 +221,11 @@ class DataSelectActivity : AppCompatActivity() {
                 Log.d("bitmap", bitmap.width.toString())
                 val imageView_dialog = customdialogView.findViewById<ImageView>(R.id.imageView_dialog)
                 imageView_dialog.setImageBitmap(bitmap)
-                val textView4 = customdialogView.findViewById<TextView>(R.id.textView4)
-                textView4.text = "dialog"
                 val btn_change = customdialogView.findViewById<Button>(R.id.btn_change)
                 btn_change.setOnClickListener {
                     if(displayNumber == myNumber) {
                         selectPhoto1()
-                        Toast.makeText(this, "写真の差し替えに成功しました", Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(this, "写真の差し替えに成功しました", Toast.LENGTH_SHORT).show()
                     }else{
                         Toast.makeText(this, "他の人の写真は差し替えられません", Toast.LENGTH_SHORT).show()
                     }
@@ -232,6 +234,24 @@ class DataSelectActivity : AppCompatActivity() {
                 val btn_close = customdialogView.findViewById<Button>(R.id.btn_close)
                 btn_close.setOnClickListener {
                     dialog.dismiss()
+                }
+
+                val btn_speaker = customdialogView.findViewById<Button>(R.id.btn_speaker)
+                btn_speaker.setOnClickListener {
+                    val dialog = Dialog(this)
+                    dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
+                    val customdialogView: View = layoutInflater.inflate(R.layout.custom_dialog_speak, null)
+                    dialog.setContentView(customdialogView)
+                    dialog.show()
+                }
+
+                val btn_listener = customdialogView.findViewById<Button>(R.id.btn_listener)
+                btn_listener.setOnClickListener {
+                    val dialog = Dialog(this)
+                    dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
+                    val customdialogView: View = layoutInflater.inflate(R.layout.custom_dialog_listen, null)
+                    dialog.setContentView(customdialogView)
+                    dialog.show()
                 }
 
                 val display: Display = windowManager.defaultDisplay
@@ -261,13 +281,11 @@ class DataSelectActivity : AppCompatActivity() {
                 Log.d("bitmap", bitmap.width.toString())
                 var imageView_dialog = customdialogView.findViewById<ImageView>(R.id.imageView_dialog)
                 imageView_dialog.setImageBitmap(bitmap)
-                var textView4 = customdialogView.findViewById<TextView>(R.id.textView4)
-                textView4.text = "dialog"
                 var btn_change = customdialogView.findViewById<Button>(R.id.btn_change)
                 btn_change.setOnClickListener {
                     if(displayNumber == myNumber) {
                         selectPhoto2()
-                        Toast.makeText(this, "写真の差し替えに成功しました", Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(this, "写真の差し替えに成功しました", Toast.LENGTH_SHORT).show()
                     }else{
                         Toast.makeText(this, "他の人の写真は差し替えられません", Toast.LENGTH_SHORT).show()
                     }
@@ -276,6 +294,24 @@ class DataSelectActivity : AppCompatActivity() {
                 var btn_close = customdialogView.findViewById<Button>(R.id.btn_close)
                 btn_close.setOnClickListener {
                     dialog.dismiss()
+                }
+
+                val btn_speaker = customdialogView.findViewById<Button>(R.id.btn_speaker)
+                btn_speaker.setOnClickListener {
+                    val dialog = Dialog(this)
+                    dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
+                    val customdialogView: View = layoutInflater.inflate(R.layout.custom_dialog_speak, null)
+                    dialog.setContentView(customdialogView)
+                    dialog.show()
+                }
+
+                val btn_listener = customdialogView.findViewById<Button>(R.id.btn_listener)
+                btn_listener.setOnClickListener {
+                    val dialog = Dialog(this)
+                    dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
+                    val customdialogView: View = layoutInflater.inflate(R.layout.custom_dialog_listen, null)
+                    dialog.setContentView(customdialogView)
+                    dialog.show()
                 }
 
                 var display: Display = windowManager.defaultDisplay
@@ -305,13 +341,11 @@ class DataSelectActivity : AppCompatActivity() {
                 Log.d("bitmap", bitmap.width.toString())
                 var imageView_dialog = customdialogView.findViewById<ImageView>(R.id.imageView_dialog)
                 imageView_dialog.setImageBitmap(bitmap)
-                var textView4 = customdialogView.findViewById<TextView>(R.id.textView4)
-                textView4.text = "dialog"
                 var btn_change = customdialogView.findViewById<Button>(R.id.btn_change)
                 btn_change.setOnClickListener {
                     if(displayNumber == myNumber) {
                         selectPhoto3()
-                        Toast.makeText(this, "写真の差し替えに成功しました", Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(this, "写真の差し替えに成功しました", Toast.LENGTH_SHORT).show()
                     }else{
                         Toast.makeText(this, "他の人の写真は差し替えられません", Toast.LENGTH_SHORT).show()
                     }
@@ -320,6 +354,24 @@ class DataSelectActivity : AppCompatActivity() {
                 var btn_close = customdialogView.findViewById<Button>(R.id.btn_close)
                 btn_close.setOnClickListener {
                     dialog.dismiss()
+                }
+
+                val btn_speaker = customdialogView.findViewById<Button>(R.id.btn_speaker)
+                btn_speaker.setOnClickListener {
+                    val dialog = Dialog(this)
+                    dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
+                    val customdialogView: View = layoutInflater.inflate(R.layout.custom_dialog_speak, null)
+                    dialog.setContentView(customdialogView)
+                    dialog.show()
+                }
+
+                val btn_listener = customdialogView.findViewById<Button>(R.id.btn_listener)
+                btn_listener.setOnClickListener {
+                    val dialog = Dialog(this)
+                    dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
+                    val customdialogView: View = layoutInflater.inflate(R.layout.custom_dialog_listen, null)
+                    dialog.setContentView(customdialogView)
+                    dialog.show()
                 }
 
                 var display: Display = windowManager.defaultDisplay
