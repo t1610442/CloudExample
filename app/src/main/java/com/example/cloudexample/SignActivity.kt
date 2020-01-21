@@ -57,7 +57,7 @@ class SignActivity : AppCompatActivity() {
             if (e != null) {
                 Log.d("[Error1]", e.toString())
             } else {
-                (findViewById(R.id.lblStats) as TextView).text = "Sign Up successful"
+                (findViewById(R.id.lblStats) as TextView).text = "新規登録が完了しました"
             }
         }
     }
@@ -70,39 +70,10 @@ class SignActivity : AppCompatActivity() {
             if (e != null) {
                 Log.d("[Error2]", e.toString())
             } else {
-                (findViewById(R.id.lblStats) as TextView).text = "Log in successful by ${ncmbUser.userName}"
+                (findViewById(R.id.lblStats) as TextView).text = "${ncmbUser.userName} さんでログインしました"
                 state = true
             }
 
         })
-    }
-
-    fun makeObj(){
-        val user = NCMBUser.getCurrentUser()
-        val queryphoto = NCMBQuery<NCMBObject>("photoPath")
-        var abc = NCMBObject("photoPath")
-        queryphoto.whereEqualTo("userID", user.objectId.toString())
-        queryphoto.findInBackground {objects, error ->
-            if (error != null) {
-                Log.d("[Error3]", error.toString())
-            } else {
-                if (objects.size == 1) {
-                    abc = objects[0]
-                    Log.d("d", "あるよ")
-                } else {
-                    Log.d("d", "ないよ")
-                    abc.put("userID", user.objectId.toString())
-                    abc.put("name", user.userName.toString())
-                    abc.saveInBackground { e ->
-                        if(e != null){
-                            Log.d("[Error]", e.toString())
-                        }else{
-                            Log.d("[RESULT:objectUpload]", "SUCCESS")
-                            Toast.makeText(this, "アップロード完了", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
-            }
-        }
     }
 }
