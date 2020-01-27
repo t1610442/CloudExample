@@ -44,6 +44,11 @@ class SignActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         }
+
+        btn_show_diary.setOnClickListener {
+            val intent = Intent(this, DiaryListActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     fun signUp() {
