@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">支援システム</string>
-    <string name="speaker_text">意識してみてください\n\n・いつ撮ったのか\n・どこで撮ったのか\n・何を撮ったのか\n・誰が(と)撮ったのか\n・この写真についてどう思ったか\n・写真に関する思い出</string>
-    <string name="listener_text">聞き手へのアプローチ\n\n・笑顔で楽しく聞いてみましょう\n・話し手が喋った内容を記憶しましょう\n・わからないと思ったことは積極的に尋ねてみましょう\n・関連する身近な話を提供してみましょう\n
+    <string name="speaker_text">話し手の方へ\n\n・いつ撮ったのか\n・どこで撮ったのか\n・何を撮ったのか\n・誰が(と)撮ったのか\n\nなどを踏まえて話してみよう！\n</string>
+    <string name="listener_text">聞き手の方へ\n\n・なぜその写真を撮ったのか聞いてみよう！\n・気になったことは聞いてみよう！\n・写真に関連するあなたの身近な話をしてみよう！\n・撮った写真の中で一番好きなのはどれか聞いてみよう！\n
     </string>
+    <string name="listener_style_text">・笑顔で楽しく聞いてみましょう！\n・相槌を打ってみましょう！\n</string>
 </resources>
