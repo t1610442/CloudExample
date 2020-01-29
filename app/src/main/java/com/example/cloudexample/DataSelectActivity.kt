@@ -251,6 +251,7 @@ class DataSelectActivity : AppCompatActivity() {
                     dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
                     val customdialogView: View = layoutInflater.inflate(R.layout.custom_dialog_listen, null)
                     dialog.setContentView(customdialogView)
+                    dialog.window?.setLayout(1450, 500)
                     dialog.show()
                 }
 
@@ -311,6 +312,7 @@ class DataSelectActivity : AppCompatActivity() {
                     dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
                     val customdialogView: View = layoutInflater.inflate(R.layout.custom_dialog_listen, null)
                     dialog.setContentView(customdialogView)
+                    dialog.window?.setLayout(1450, 500)
                     dialog.show()
                 }
 
@@ -371,6 +373,7 @@ class DataSelectActivity : AppCompatActivity() {
                     dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
                     val customdialogView: View = layoutInflater.inflate(R.layout.custom_dialog_listen, null)
                     dialog.setContentView(customdialogView)
+                    dialog.window?.setLayout(1450, 500)
                     dialog.show()
                 }
 

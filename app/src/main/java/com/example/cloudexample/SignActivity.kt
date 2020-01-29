@@ -20,8 +20,8 @@ class SignActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign)
 
-        NCMB.initialize(applicationContext, "9b85daffb63c9794922a25efda8e8d50f11014f244ac4e4374a5514b1ab4142e",
-            "7ab1f242b405418cb105d72b87f076d89619702cd9ceb61c3c17fd1ed9cb6dfc")
+        //NCMB.initialize(applicationContext, "9b85daffb63c9794922a25efda8e8d50f11014f244ac4e4374a5514b1ab4142e", "7ab1f242b405418cb105d72b87f076d89619702cd9ceb61c3c17fd1ed9cb6dfc")
+        NCMB.initialize(applicationContext, "13560c451c65f37972a40d9fddb081f69684e9da3bf6ad3164190d7a5de29b4b", "409f16f2ecc212cb5764b16dd8ffb2d7d68b0d7097bd5f3e27bf7ce1a3ea399c")
 
         // 会員登録処理用のボタン
         btnSignUp.setOnClickListener {
