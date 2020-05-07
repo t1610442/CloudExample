@@ -10,7 +10,7 @@
         android:id="@+id/btnSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="278dp"
+        android:layout_marginStart="160dp"
         android:layout_marginBottom="100dp"
         android:text="新規登録"
         android:textSize="24sp"
@@ -21,7 +21,7 @@
         android:id="@+id/btnSignIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="260dp"
+        android:layout_marginEnd="160dp"
         android:layout_marginBottom="100dp"
         android:text="ログイン"
         android:textSize="24sp"
@@ -33,14 +33,15 @@
         android:id="@+id/userName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="128dp"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="32dp"
         android:descendantFocusability="beforeDescendants"
         android:ems="10"
         android:focusableInTouchMode="true"
         android:hint="ユーザー名"
         android:inputType="textPersonName"
         android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lblStats" />
 
@@ -48,8 +49,7 @@
         android:id="@+id/password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="68dp"
-        android:layout_marginEnd="128dp"
+        android:layout_marginTop="32dp"
         android:descendantFocusability="beforeDescendants"
         android:ems="10"
         android:focusableInTouchMode="true"
@@ -57,7 +57,9 @@
         android:inputType="textPassword"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lblStats" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userName" />
 
 
     <TextView
@@ -65,7 +67,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="163dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="64dp"
         android:layout_marginEnd="151dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
@@ -87,18 +89,16 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.93"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/btn_show_diary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:text="日記を確認する"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.11"
-        app:layout_constraintStart_toStartOf="parent" />
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="64dp"
+        android:background="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/password"
+        app:layout_constraintStart_toEndOf="@+id/password" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         button_back.setOnClickListener {
-            val intent = Intent(this, SignActivity::class.java)
+            val intent = Intent(this, FirstActivity::class.java)
             startActivity(intent)
         }
 

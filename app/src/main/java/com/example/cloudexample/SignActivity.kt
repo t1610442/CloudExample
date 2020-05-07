@@ -4,8 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.TextView
-import android.widget.Toast
+import android.view.View
+import android.widget.*
 import com.nifcloud.mbaas.core.NCMB
 import com.nifcloud.mbaas.core.NCMBObject
 import com.nifcloud.mbaas.core.NCMBQuery
@@ -15,14 +15,13 @@ import kotlinx.android.synthetic.main.activity_sign.*
 class SignActivity : AppCompatActivity() {
     
     private var state = false
+    private val spinnerItems = arrayOf("1", "2", "3", "4")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign)
 
-        //NCMB.initialize(applicationContext, "9b85daffb63c9794922a25efda8e8d50f11014f244ac4e4374a5514b1ab4142e", "7ab1f242b405418cb105d72b87f076d89619702cd9ceb61c3c17fd1ed9cb6dfc")
-        NCMB.initialize(applicationContext, "13560c451c65f37972a40d9fddb081f69684e9da3bf6ad3164190d7a5de29b4b", "409f16f2ecc212cb5764b16dd8ffb2d7d68b0d7097bd5f3e27bf7ce1a3ea399c")
-
+        NCMB.initialize(applicationContext, "8d3584c70aedac126b19635825096cbe82ac4f4b863a2b18d43e6fada9505ba2", "c3750b96bb4c722dc73228c16eea6ddecae52d10af3d626ef9da8643488a4abf")
         // 会員登録処理用のボタン
         btnSignUp.setOnClickListener {
             this.signUp()
@@ -45,9 +44,25 @@ class SignActivity : AppCompatActivity() {
             }
         }
 
-        btn_show_diary.setOnClickListener {
-            val intent = Intent(this, DiaryListActivity::class.java)
-            startActivity(intent)
+        val adapter = ArrayAdapter(applicationContext,
+            android.R.layout.simple_spinner_item, spinnerItems)
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            //　アイテムが選択された時
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?, position: Int, id: Long
+            ) {
+                val spinnerParent = parent as Spinner
+            }
+
+            //　アイテムが選択されなかった
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                //
+            }
         }
     }
 
